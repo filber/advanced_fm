@@ -3,6 +3,8 @@
 // Author : Da Li
 // Andrew ID : dal2
 
+module hw1_1
+
 sig SocialNetwork {
     posts : User -> Post,   // The set of posts owned by each user
     friends : User -> User // Friendships between users
@@ -39,8 +41,10 @@ pred invariant [n : SocialNetwork ] {
 }
 
 run {
-    all n : SocialNetwork | invariant[n]
-} for 4 but exactly 1 SocialNetwork
+   some n, n' : SocialNetwork, u : User, p : Post |
+        invariant[n] and addPost[n, n', u, p] and
+            invariant[n']
+} for 4 but exactly 2 SocialNetwork
 
 
 // assertion checks addPost preserves the the invariant

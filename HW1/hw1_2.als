@@ -3,8 +3,8 @@
 // Author : Da Li
 // Andrew ID : dal2
 
-sig User {}
-sig Post {}
+module hw1_2
+open hw1_1
 
 sig DistributedSocialNetwork {
     // Servers where posts are stored
@@ -32,7 +32,7 @@ pred promote[n, n' : DistributedSocialNetwork, s, s' : Server] {
 }
 
 // add a new post - local change predicate
-pred addPost[s, s' : Server , u : User , p : Post ] {
+pred addPostLocal[s, s' : Server , u : User , p : Post ] {
     // Pre-Condition
     #s.posts < s.capacity
     p not in s.posts[User]
@@ -43,7 +43,7 @@ pred addPost[s, s' : Server , u : User , p : Post ] {
 }
 
 // add a post - local change predicate
-pred removePost[s, s' : Server , u : User , p : Post ] {
+pred removePostLocal[s, s' : Server , u : User , p : Post ] {
     // Pre-Condition
     u->p in s.posts
     // Post-Condition
@@ -57,7 +57,7 @@ pred addPostConc [n, n' : DistributedSocialNetwork , u : User , p : Post ] {
     p not in n.servers.posts[User]
     some s : n.servers, s' : n'.servers |
         promote[n, n', s, s'] and
-        addPost[s, s', u, p]
+        addPostLocal[s, s', u, p]
 }
 
 // remove an existing post ‘‘p’’ from user ‘‘u’’
@@ -66,7 +66,7 @@ pred removePostConc [n, n' : DistributedSocialNetwork , u : User , p : Post ] {
     u->p in n.servers.posts
     some s : n.servers, s' : n'.servers |
         promote[n, n', s, s'] and
-        removePost[s, s', u, p]
+        removePostLocal[s, s', u, p]
 }
 
 // predicate defines what it means for a social network to be in a valid state
