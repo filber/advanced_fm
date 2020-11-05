@@ -69,6 +69,10 @@ fun booksByAuthor[l : Library, a : Author]: set Copy {
 }
 
 pred checkout[l, l' : Library, u : Person, c : Copy] {
+    // Precondition
+    #{ b : l.books |
+       let r = l.records[b] | r.lastuser = u and r.status = Out
+    } < 3
     // Postcondition
     // Modify the existing record for “c”
     // to indicate that it has been checked out by “u”

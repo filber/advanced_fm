@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<alloy>
+
+<view>
+
+<defaultnode/>
+
+<defaultedge/>
+
+<node>
+   <type name="Int"/>
+   <type name="String"/>
+   <type name="univ"/>
+   <type name="Library/Copy"/>
+   <type name="Library/In"/>
+   <type name="Library/Library"/>
+   <type name="Library/Out"/>
+   <type name="Library/Record"/>
+   <type name="Library/Title"/>
+   <type name="seq/Int"/>
+   <set name="this/Init" type="Library/Library"/>
+   <set name="$MAX_CHECKOUT" type="Int"/>
+</node>
+
+<node visible="no">
+   <type name="Library/Author"/>
+   <type name="Library/Book"/>
+   <type name="Library/ID"/>
+   <type name="Library/Person"/>
+   <type name="Library/Status"/>
+   <type name="Library/Subject"/>
+</node>
+
+<edge visible="no">
+   <relation name="staff"> <type name="Library/Library"/> <type name="Library/Person"/> </relation>
+   <relation name="users"> <type name="Library/Library"/> <type name="Library/Person"/> </relation>
+</edge>
+
+<edge visible="no" attribute="yes">
+   <relation name="author"> <type name="Library/Book"/> <type name="Library/Author"/> </relation>
+   <relation name="book"> <type name="Library/Copy"/> <type name="Library/Book"/> </relation>
+   <relation name="id"> <type name="Library/Copy"/> <type name="Library/ID"/> </relation>
+   <relation name="lastuser"> <type name="Library/Record"/> <type name="Library/Person"/> </relation>
+   <relation name="status"> <type name="Library/Record"/> <type name="Library/Status"/> </relation>
+</edge>
+
+</view>
+
+</alloy>
