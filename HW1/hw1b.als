@@ -4,13 +4,13 @@
 // Andrew ID : dal2
 
 module hw1b
-open hw1a
+open common
 
 sig DistributedSocialNetwork {
     // Servers where posts are stored
     servers : set Server , 
     // Friendships between users
-    friend : User -> User
+    friends : User -> User
 }
 sig Server {
     // Each server stores some subset of posts by different users
@@ -19,15 +19,11 @@ sig Server {
     capacity : Int
 }
 
+// initial states of DSN
 some sig InitDSN in DistributedSocialNetwork {
 }{
-    #friend=0
-    #servers=0
-    //all s : servers | #s.posts = 0 and s.capacity > 0
-}
-
-pred postOp[n, n' : DistributedSocialNetwork] {
-    n'.friend = n.friend
+    #friends=0
+    all s : servers | #s.posts = 0 and s.capacity > 0
 }
 
 // describes how local and global states are related
@@ -43,10 +39,10 @@ pred addPostLocal[s, s' : Server , u : User , p : Post ] {
     // Pre-Condition
     #s.posts < s.capacity
     p not in s.posts[User]
-
     // Post-Condition
-    s'.capacity = s.capacity
     s'.posts = s.posts + u->p
+    // Frame Condition
+    s'.capacity = s.capacity
 }
 
 // locally remove a post
@@ -54,32 +50,39 @@ pred removePostLocal[s, s' : Server , u : User , p : Post ] {
     // Pre-Condition
     u->p in s.posts
     // Post-Condition
-    s'.capacity = s.capacity
     s'.posts = s.posts - u->p
+    // Frame Condition
+    s'.capacity = s.capacity
 }
 
 // add a new post ‘‘p’’ to those belonging to user ‘‘u’’
 pred addPostConc [n, n' : DistributedSocialNetwork , u : User , p : Post ] {
-    postOp[n,n']
+    // Pre-Condition
     p not in n.servers.posts[User]
+    // Post-Condition
     some s : n.servers, s' : n'.servers |
         promote[n, n', s, s'] and addPostLocal[s, s', u, p]
+    // Frame Condition
+    n'.friends = n.friends
 }
 
 // remove an existing post ‘‘p’’ from user ‘‘u’’
 pred removePostConc [n, n' : DistributedSocialNetwork , u : User , p : Post ] {
-    postOp[n,n']
+    // Pre-Condition
     u->p in n.servers.posts
+    // Post-Condition
     some s : n.servers, s' : n'.servers |
         promote[n, n', s, s'] and removePostLocal[s, s', u, p]
+    // Frame Condition
+    n'.friends = n.friends
 }
 
 // predicate defines what it means for a social network to be in a valid state
 pred invariantConc [n : DistributedSocialNetwork ] {
-    // 1. friendship is symmetric
-    n.friend = ~(n.friend)
-    // 2. a user cannot be his or her own friend
-    no u : User| u->u in n.friend
+    // 1. friendsship is symmetric
+    n.friends = ~(n.friends)
+    // 2. a user cannot be his or her own friends
+    no u : User| u->u in n.friends
     // 3. a post cannot be owned by more than one user
     all p : Post | lone n.servers.posts.p
     // 4.Each post is stored on exactly one of the servers
@@ -96,7 +99,7 @@ assert AddConcPreservesInv {
         invariantConc[n] and addPostConc[n, n', u, p] implies
             invariantConc[n']
 }
-check AddConcPreservesInv
+check AddConcPreservesInv for 5 but exactly 2 DistributedSocialNetwork
 
 // assertion checks removePostConc preserves the the invariant
 assert RemoveConcPreservesInv {
@@ -106,4 +109,4 @@ assert RemoveConcPreservesInv {
         invariantConc[n] and removePostConc[n, n', u, p] implies
             invariantConc[n']
 }
-check RemoveConcPreservesInv
+check RemoveConcPreservesInv for 5 but exactly 2 DistributedSocialNetwork

@@ -5,12 +5,12 @@
 
 module hw1a
 
+open common
+
 sig SocialNetwork {
     posts : User -> Post,   // The set of posts owned by each user
     friends : User -> User // Friendships between users
 }
-sig User {}
-sig Post {}
 
 some sig InitSN in SocialNetwork {
 }{
@@ -25,21 +25,21 @@ pred postOp[n, n' : SocialNetwork] {
 // add a new post ‘‘p’’ to those belonging to user ‘‘u’’
 pred addPost [n, n' : SocialNetwork , u : User , p : Post ] {
     // Pre-condition
-    postOp[n,n']
     p not in n.posts[User]
-
     // Post-condition
     n'.posts = n.posts + u->p
+    // Frame Condition
+    postOp[n,n']
 }
 
 // remove an existing post ‘‘p’’ from user ‘‘u’’
 pred removePost [n, n' : SocialNetwork , u : User , p : Post ] {
     // Pre-condition
-    postOp[n,n']
     u->p in n.posts
-
     // Post-condition
     n'.posts = n.posts - u->p
+    // Frame Condition
+    postOp[n,n']
 }
 
 // what it means for a social network to be in a valid state
