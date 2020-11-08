@@ -22,7 +22,8 @@ sig Server {
 some sig InitDSN in DistributedSocialNetwork {
 }{
     #friend=0
-    all s : servers | #s.posts = 0 and s.capacity > 0
+    #servers=0
+    //all s : servers | #s.posts = 0 and s.capacity > 0
 }
 
 pred postOp[n, n' : DistributedSocialNetwork] {

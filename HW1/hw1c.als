@@ -22,19 +22,19 @@ check InitRefinement
 // assertion checks that the concrete version of the add operation (addPostConc) refines the abstract one (addPost)
 assert AddRefinement {
     all n, n' : DistributedSocialNetwork, s,s' : SocialNetwork, u : User, p : Post |
-        //repInvariant[n] and
+        (//repInvariant[n] and
         addPostConc[n, n', u, p] and
-        s = abs[n] and s' = abs[n'] implies 
+        s = abs[n] and s' = abs[n']) implies 
             addPost[s,s',u,p]
 }
-check AddRefinement for 10
+check AddRefinement for 4
 
 // assertion checks that the concrete version of the remove operation (removePostConc) refines the abstract one (removePost)
 assert RemoveRefinement {
-    all n, n' : DistributedSocialNetwork, s: abs[n], s' : abs[n'], u : User, p : Post |
-        //repInvariant[n] and
+    all n, n' : DistributedSocialNetwork, s,s' : SocialNetwork, u : User, p : Post |
+        (//repInvariant[n] and
         removePostConc[n, n', u, p] and
-        s = abs[n] and s' = abs[n'] implies 
+        s = abs[n] and s' = abs[n']) implies 
             removePost[s,s',u,p]
 }
-check RemoveRefinement for 3
+check RemoveRefinement for 4
